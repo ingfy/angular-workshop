@@ -1,0 +1,29 @@
+{
+  "name": "angular-workshop",
+  "version": "1.0.0",
+  "description": "AngularJS workshop for Ciber.",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ciber-Norge/angular-workshop.git"
+  },
+  "author": "Yngve Svalestuen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ciber-Norge/angular-workshop/issues"
+  },
+  "readme": "README.md",
+  "homepage": "https://github.com/Ciber-Norge/angular-workshop#readme",
+  "devDependencies": {
+    "concurrently": "^1.0.0",
+    "gulp": "^3.9.0",
+    "gulp-jasmine": "^2.2.1",
+    "gulp-typescript": "^2.10.0",
+    "live-server": "^0.9.0",
+    "tsd": "^0.6.5",
+    "typescript": "^1.7.5"
+  }
+}
