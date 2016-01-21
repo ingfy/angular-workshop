@@ -7,10 +7,10 @@ let gutil = require('gulp-util');
 
 let doSync = require('./gulp/do-sync.js');
 
-let project = typescript.createProject('tsconfig.json', {noExternalResolve: true});
+let project = typescript.createProject('tsconfig.json', {});
 
 gulp.task('compile', () => 
-    gulp.src(['src/**/*.ts', 'typings/**/*.d.ts'])
+    gulp.src('src/**/*.ts')
         .pipe(typescript(project))
         .pipe(doSync((file, enc) => gutil.log(`Compiled ${file.path}`)))
         .pipe(gulp.dest('build')));
