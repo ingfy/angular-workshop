@@ -1,23 +1,26 @@
 'use strict';
 
+
 let gulp = require('gulp');
-let typescript = require('gulp-typescript');
-let jasmine = require('gulp-jasmine');
-let gutil = require('gulp-util');
+let plugins = require('gulp-load-plugins')();
 
-let doSync = require('./gulp/do-sync.js');
+plugins.doSync = require('./gulp/do-sync.js');
 
-let project = typescript.createProject('tsconfig.json', {});
+function task(name, dependencies, path) {
+    let theTask = path => require(path)(gulp, plugins);
+    
+    if (arguments.length == 2) {     
+        path = arguments[1];
+    
+        return gulp.task(name, theTask(path));
+    }
+    
+    gulp.task(name, dependencies, theTask(path));
+}
 
-gulp.task('compile', () => 
-    gulp.src('src/**/*.ts')
-        .pipe(typescript(project))
-        .pipe(doSync((file, enc) => gutil.log(`Compiled ${file.path}`)))
-        .pipe(gulp.dest('build')));
-
-gulp.task('test', ['compile'], () => 
-    gulp.src('build/**/*.spec.js')
-        .pipe(jasmine()));
+task('compile', ['clean'], './gulp/tasks/compile');
+task('test', ['compile'], './gulp/tasks/start-karma');
+task('clean', [], './gulp/tasks/clean');
 
 gulp.task('watch', () => 
     gulp.watch('src/**/*.ts', ['compile', 'test']));
