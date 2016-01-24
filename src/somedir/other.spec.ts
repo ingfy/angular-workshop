@@ -1,26 +1,33 @@
+import { 
+    describe, 
+    expect,  
+    it,
+    beforeEach
+} from 'angular2/testing';
+
 import {Calculator} from './other';
 
-describe('other.Calculator', () => {
-    it('initial value is zero', () => {
-        let calc = new Calculator();
+export function main() {
+    describe('other.Calculator', () => {
+        let calc : Calculator;
         
-        expect(calc.result).toBe(0);
-    });
-    
-    it('can add a number', () => {
-       let calc = new Calculator();
-       
-       calc.add(10);
-       
-       expect(calc.result).toBe(10); 
-    });
-    
-    it('can add several numnbers', () => {
-        let calc = new Calculator();
+        beforeEach(() => calc = new Calculator());
         
-        calc.add(10);
-        calc.add(5);
+        it('initial value is zero', () => {
+            expect(calc.result).toBe(0);
+        });
         
-        expect(calc.result).toBe(15);
+        it('can add a number', () => {
+            calc.add(10);
+            
+            expect(calc.result).toBe(10); 
+        });
+        
+        it('can add several numnbers', () => {
+            calc.add(10);
+            calc.add(5);
+            
+            expect(calc.result).toBe(15);
+        });
     });
-});
+};
