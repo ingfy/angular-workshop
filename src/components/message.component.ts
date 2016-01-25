@@ -38,6 +38,10 @@ import {MessageService} from '../services/message-service';
 export class MessageComponent {
     @Input() message : Message;
     
+    constructor(
+        private _messageService : MessageService
+    ) {}
+    
     get signature() {
         return this.message.isAnonymous 
             ? 'Anonym'
@@ -46,9 +50,11 @@ export class MessageComponent {
     
     onUpvote() {
         this.message.upvote();
+        this._messageService.update(this.message);
     }
     
     onDownvote() {
         this.message.downvote();
+        this._messageService.update(this.message);
     }
 }
