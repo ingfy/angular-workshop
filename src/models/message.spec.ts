@@ -47,15 +47,15 @@ export function main() {
             });
         });
         
-        describe('signature', () => {
-            it('should be \'anonym\' when author is not present', () => {
-                expect(m.signature).toMatch(/anonym/i);
+        describe('isAnonymous', () => {
+            it('should be \'true\' when author is not present', () => {
+                expect(m.isAnonymous).toBe(true);
             });
             
-            it('Should be the author\'s name when he or she is present', () => {
+            it('should be \'false\' when he or she is present', () => {
                 let o = new Message(null, 'sometext', new User('The Man'));
                 
-                expect(o.signature).toMatch(/the man/i);
+                expect(o.isAnonymous).toBe(false);
             });
         });
         
@@ -67,6 +67,19 @@ export function main() {
                 expect(o.date.getFullYear()).toBe(now.getFullYear());
                 expect(o.date.getMonth()).toBe(now.getMonth());
                 expect(o.date.getDate()).toBe(now.getDate());
+            });
+        });
+        
+        describe('children', () => {
+            it('should not list any children for an empty node', () => {
+                expect(m.children.length).toBe(0);
+            });
+            
+            it('should automatically add itself as a child to parent through constructor', () => {
+                let o = new Message(m);
+                
+                expect(m.children.length).toBe(1);
+                expect(m.children[0]).toBe(o);
             });
         });
     });

@@ -7,21 +7,21 @@ import {
 } from 'angular2/testing';
 import {provide} from 'angular2/core';
 
-import {AppContentComponent} from './app-content.component';
+import {ForumComponent} from './forum.component';
 
 import {LoginService} from '../services/login-service';
 import {USERNAME, LoggedInService} from '../services/login-service.mock';
 
 export function main() {
-    describe('AppContentComponent', () => {
+    describe('ForumComponent', () => {
         beforeEachProviders(() => [
             LoginService
         ]);
         
         it('should greet authenticated users', injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
             return tcb
-                .overrideProviders(AppContentComponent, [provide(LoginService, {useClass: LoggedInService})])
-                .createAsync(AppContentComponent)
+                .overrideProviders(ForumComponent, [provide(LoginService, {useClass: LoggedInService})])
+                .createAsync(ForumComponent)
                 .then(fixture => {
                     fixture.detectChanges();
                     

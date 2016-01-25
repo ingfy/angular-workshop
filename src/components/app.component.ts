@@ -2,7 +2,7 @@ import {Component} from 'angular2/core';
 import {CORE_DIRECTIVES} from 'angular2/common';
 
 import { AuthPromptComponent } from './auth-prompt.component';
-import { AppContentComponent } from './app-content.component';
+import { ForumComponent } from './forum.component';
 import { LoginService } from '../services/login-service';
 
 @Component({
@@ -11,10 +11,10 @@ import { LoginService } from '../services/login-service';
     <div class="container">
         <h1>Velkommen til Angular-Workshop!2</h1>
         <auth-prompt *ngIf="!isLoggedIn"></auth-prompt>
-        <app-content *ngIf="isLoggedIn"></app-content>
+        <forum-content *ngIf="isLoggedIn"></forum-content>
     </div>
     `,
-    directives: [AuthPromptComponent, AppContentComponent, CORE_DIRECTIVES],
+    directives: [AuthPromptComponent, ForumComponent, CORE_DIRECTIVES],
     providers: [LoginService]
 })
 

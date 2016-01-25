@@ -2,26 +2,32 @@ import {Component} from 'angular2/core';
 import {CORE_DIRECTIVES} from 'angular2/common';
 
 import {LoginService} from '../services/login-service';
-import {MessagesService} from '../services/messages-service';
+import {MessageService} from '../services/message-service';
 import {Message} from '../models/message';
 
+import {MessageComponent} from './message.component';
+
 @Component({
-    selector: 'app-content',
+    selector: 'forum-content',
     template: `
     <p class="greeting">Heisann {{username}}!</p>
-    <ul class="topic-list" *ngFor="#message of messages">
+    <ul class="topic-list" *ngFor="#topic of messages">
+        <li>
+            <thread-message [message]="topic"></thread-message>
+        </li>
     </ul>
     `,
-    providers: [MessagesService]
+    directives: [MessageComponent, CORE_DIRECTIVES],
+    providers: [MessageService]
 })
-export class AppContentComponent {
+export class ForumComponent {
     messages : Message[];
     
     constructor(
         private _loginService : LoginService, 
-        private _messagesService : MessagesService
+        private _messageService : MessageService
     ) {
-        this.messages = this._messagesService.getTopics()
+        this._messageService.getTopics()
             .subscribe(messages => this.messages = messages);
     }
     

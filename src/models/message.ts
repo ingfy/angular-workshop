@@ -7,8 +7,15 @@ export class Message {
         public parent : Message = null,
         public text : string = '',
         public author : User = null,
-        public date : Date = new Date()
-    ) {}
+        public date : Date = new Date(),
+        private _children : Message[] = []
+    ) {
+        if (this.parent != null) this.parent.addChild(this);
+    }
+    
+    addChild(child : Message) { this._children.push(child); }
+    
+    get children() { return this._children; }
     
     get isTopic() { return !this.parent; }
     
@@ -16,7 +23,7 @@ export class Message {
     upvote() { this._votes++; }
     downvote() { this._votes--; }
     
-    get signature() {
-        return this.author ? this.author.name : 'Anonym';
+    get isAnonymous() {
+        return this.author == null;
     }
 }
