@@ -4,3 +4,4 @@ typings/
 
 # Generated files
 build/
+npm-debug.log
