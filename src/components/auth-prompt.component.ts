@@ -19,7 +19,8 @@ interface LoginInfo {
                        ngControl="username"
                        placeholder="Hva heter du?"
                        #username="ngForm" />
-                <div [hidden]="username.valid" class="alert alert-danger">
+                <div [hidden]="username.valid || !username.touched" 
+                     class="alert alert-danger">
                     Vennligst fyll inn brukernavnet ditt!
                 </div>
             </div>

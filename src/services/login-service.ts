@@ -4,15 +4,19 @@ import {User} from '../models/user';
 
 @Injectable()
 export class LoginService {
-    public currentUser : User;
+    private _currentUser : User;
     
     login(username : string) : Promise<User> {
-        this.currentUser = new User(username);
+        this._currentUser = new User(username);
         
-        return Promise.resolve(this.currentUser);
+        return Promise.resolve(this._currentUser);
     }
     
-    isLoggedIn() : boolean {
-        return this.currentUser != null;
+    get isLoggedIn() {
+        return this._currentUser != null;
+    }
+    
+    get currentUser() {
+        return this._currentUser;
     }
 }

@@ -7,8 +7,25 @@
         </style>
     </head>
     <body>
-        <angular-workshop></angular-workshop>
+        <angular-workshop>Laster...</angular-workshop>
         
+        <!-- shim:js -->
+        <!-- endinject -->
         
+        <!-- lib:js -->
+        <!-- endinject -->
+        
+        <script>
+            System.config({
+                "defaultJSExtensions": true,
+                "paths": {
+                    "boot": "/build/boot.js", "*": "/node_modules/*"
+                }
+            });
+        </script>
+        
+        <script>
+            System.import('boot');
+        </script>
     </body>
 </html>
