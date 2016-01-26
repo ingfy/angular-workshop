@@ -3,6 +3,7 @@ import {
     it,
     expect,
     injectAsync,
+    beforeEachProviders,
     TestComponentBuilder
 } from 'angular2/testing';
 import {Component, View, provide} from 'angular2/core';
@@ -10,6 +11,8 @@ import {Component, View, provide} from 'angular2/core';
 import {MessageComponent} from './message.component';
 import {Message} from '../models/message'; 
 import {User} from '../models/user';
+import {MockMessageService} from '../services/message-service.mock';
+import {MessageService} from '../services/message-service';
 
 import {getCompiled} from '../utils/testing-utils';
 
@@ -21,11 +24,12 @@ const REPLY_MESSAGE_TEXT = 'Reply';
 
 function getMessage() {
     let m = new Message(
+        "one",
         null, 
         PARENT_MESSAGE_TEXT, 
-        new User(PARENT_MESSAGE_USERNAME));
+        PARENT_MESSAGE_USERNAME);
         
-    new Message(m, REPLY_MESSAGE_TEXT);
+    new Message("one.one", m, REPLY_MESSAGE_TEXT);
     
     return m;
 }
@@ -33,6 +37,8 @@ function getMessage() {
 export function main() {
     describe('MessageComponent', () => {
         let m : Message;
+        
+        beforeEachProviders(() => [provide(MessageService, {useClass: MockMessageService})]);
         
         beforeEach(() => {
             m = getMessage();

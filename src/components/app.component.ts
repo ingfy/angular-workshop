@@ -14,8 +14,7 @@ import { LoginService } from '../services/login-service';
         <forum-content *ngIf="isLoggedIn"></forum-content>
     </div>
     `,
-    directives: [AuthPromptComponent, ForumComponent, CORE_DIRECTIVES],
-    providers: [LoginService]
+    directives: [AuthPromptComponent, ForumComponent, CORE_DIRECTIVES]
 })
 
 export class AppComponent {

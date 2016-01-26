@@ -18,7 +18,7 @@ import {MessageComponent} from './message.component';
     </ul>
     `,
     directives: [MessageComponent, CORE_DIRECTIVES],
-    providers: [MessageService]
+    providers: []
 })
 export class ForumComponent {
     messages : Message[];
@@ -27,7 +27,8 @@ export class ForumComponent {
         private _loginService : LoginService, 
         private _messageService : MessageService
     ) {
-        this._messageService.getTopics()
+        this._messageService
+            .fetch()
             .subscribe(messages => this.messages = messages);
     }
     

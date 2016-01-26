@@ -11,6 +11,7 @@ import {
 import {provide, Provider, Component} from 'angular2/core';
 
 import {LoginService} from '../services/login-service';
+import {UserRepository} from '../repositories/user-repository';
 import {AppComponent} from './app.component';
 
 import {AuthPromptComponent} from './auth-prompt.component';
@@ -29,22 +30,16 @@ import {ForumComponent} from './forum.component';
 
 import {LoggedInService, LoggedOutService} from '../services/login-service.mock'; 
 
-export function override(tcb: TestComponentBuilder, providers: Provider[] = []) {
-    tcb = tcb 
+export function override(tcb: TestComponentBuilder) {
+    return tcb 
         .overrideDirective(AppComponent, ForumComponent, MockForumComponent)
         .overrideDirective(AppComponent, AuthPromptComponent, MockAuthPromptComponent);
-        
-        if (providers.length > 0) {
-        tcb = tcb.overrideProviders(AppComponent, providers);
-    }
-    
-    return tcb;
 }
 
 export function main() {
     describe('AppComponent', () => {    
         beforeEachProviders(() => [
-            LoginService
+            LoginService, UserRepository
         ]);
         
         it('should be welcoming', injectAsync([TestComponentBuilder], tcb => {
@@ -56,33 +51,45 @@ export function main() {
                 });
         }));
         
-        it('should have a visible auth prompt for not-logged in users', injectAsync([TestComponentBuilder], tcb => {
-            return override(tcb, [provide(LoginService, {useClass: LoggedOutService})])
-                .createAsync(AppComponent)
-                .then(getCompiled)
-                .then(compiled => {
-                    let authPrompt = compiled.querySelector('auth-prompt');
+        describe('Logged out', () => {
+            beforeEachProviders(() => [
+                provide(LoginService, {useClass: LoggedOutService})
+            ]);
+        
+            it('should have a visible auth prompt for not-logged in users', injectAsync([TestComponentBuilder], tcb => {
+                return override(tcb)
+                    .createAsync(AppComponent)
+                    .then(getCompiled)
+                    .then(compiled => {
+                        let authPrompt = compiled.querySelector('auth-prompt');
+                
+                        expect(authPrompt).not.toBe(null);
+                    });
+            }));            
+        });
+        
+        describe('Logged in', () => {
+            beforeEachProviders(() => [
+                provide(LoginService, {useClass: LoggedInService})
+            ]);
             
-                    expect(authPrompt).not.toBe(null);
-                });
-        }));
-        
-        it('should hide the auth prompt for logged-in users', injectAsync([TestComponentBuilder], tcb => {
-            return override(tcb, [provide(LoginService, {useClass: LoggedInService})])
-                .createAsync(AppComponent)
-                .then(getCompiled)
-                .then(compiled => {
-                    expect(compiled.querySelector('auth-prompt')).toBe(null);
-                });
-        }));
-        
-        it('should show the content for logged-in users', injectAsync([TestComponentBuilder], tcb => {
-            return override(tcb, [provide(LoginService, {useClass: LoggedInService})])
-                .createAsync(AppComponent)
-                .then(getCompiled)
-                .then(compiled => {
-                    expect(compiled.querySelector('forum-content')).not.toBe(null);
-                });
-        }));
+            it('should hide the auth prompt for logged-in users', injectAsync([TestComponentBuilder], tcb => {
+                return override(tcb)
+                    .createAsync(AppComponent)
+                    .then(getCompiled)
+                    .then(compiled => {
+                        expect(compiled.querySelector('auth-prompt')).toBe(null);
+                    });
+            }));
+            
+            it('should show the content for logged-in users', injectAsync([TestComponentBuilder], tcb => {
+                return override(tcb)
+                    .createAsync(AppComponent)
+                    .then(getCompiled)
+                    .then(compiled => {
+                        expect(compiled.querySelector('forum-content')).not.toBe(null);
+                    });
+            }));        
+        });
     });
 }

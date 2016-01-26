@@ -7,13 +7,14 @@ import {
 } from 'angular2/testing';
 
 import { LoginService } from './login-service';
+import { UserRepository } from '../repositories/user-repository';
 
 export function main() {
     describe('LoginService', () => {
         let loginService : LoginService;
         
         beforeEach(() => {
-            loginService = new LoginService();
+            loginService = new LoginService(new UserRepository());
         });
         
         it('should by default not have a logged in user', () => {

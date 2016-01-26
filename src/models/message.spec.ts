@@ -11,7 +11,7 @@ export function main() {
     describe('Message', () => {
         let m: Message;
         
-        beforeEach(() => m = new Message());
+        beforeEach(() => m = new Message("one"));
             
         it('should start with 0 votes', () => {
             expect(m.votes).toBe(0);
@@ -20,7 +20,7 @@ export function main() {
         it('should be market as a \'topic\' when it\'s the root', () => {
             expect(m.isTopic).toBe(true);
             
-            let o = new Message(m);
+            let o = new Message("one.one", m);
             
             expect(o.isTopic).toBe(false);
         });
@@ -53,7 +53,7 @@ export function main() {
             });
             
             it('should be \'false\' when he or she is present', () => {
-                let o = new Message(null, 'sometext', new User('The Man'));
+                let o = new Message("two", null, 'sometext', 'The Man');
                 
                 expect(o.isAnonymous).toBe(false);
             });
@@ -62,7 +62,7 @@ export function main() {
         describe('date', () => {
             it('should be the creation date if nothing is specified', () => {
                 let now = new Date(Date.now());
-                let o = new Message();
+                let o = new Message("two");
                 
                 expect(o.date.getFullYear()).toBe(now.getFullYear());
                 expect(o.date.getMonth()).toBe(now.getMonth());
@@ -72,14 +72,14 @@ export function main() {
         
         describe('children', () => {
             it('should not list any children for an empty node', () => {
-                expect(m.children.length).toBe(0);
+                expect(m.replies.length).toBe(0);
             });
             
             it('should automatically add itself as a child to parent through constructor', () => {
-                let o = new Message(m);
+                let o = new Message("two", m);
                 
-                expect(m.children.length).toBe(1);
-                expect(m.children[0]).toBe(o);
+                expect(m.replies.length).toBe(1);
+                expect(m.replies[0]).toBe(o);
             });
         });
     });

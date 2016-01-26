@@ -45,16 +45,16 @@ export class MessageComponent {
     get signature() {
         return this.message.isAnonymous 
             ? 'Anonym'
-            : this.message.author.name;
+            : this.message.author;
     }
     
     onUpvote() {
         this.message.upvote();
-        this._messageService.update(this.message);
+        this._messageService.save(this.message);
     }
     
     onDownvote() {
         this.message.downvote();
-        this._messageService.update(this.message);
+        this._messageService.save(this.message);
     }
 }

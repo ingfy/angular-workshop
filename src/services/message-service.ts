@@ -3,33 +3,58 @@ import {Observable} from 'rxjs/Observable';
 import {Subscriber} from 'rxjs/Subscriber';
 
 import {Message} from '../models/message';
-import {MESSAGES} from './mock-messages';
 
-function findParent(current: Message | MessageService, match: Message): Message | MessageService {
-    // TODO: tree search
+import {MessageRepository, Ref} from '../repositories/message-repository';
+
+interface MessageUpdate { // Directly updatable properties
+    votes: number;
+}
+
+function getPath(message : Message) {
+    var path = [];
+    
+    while (message.parent != null) {
+        path.unshift(message.key);
+        
+        if (message.parent.parent != null) path.unshift("replies");
+        
+        message = message.parent;
+    }
+    
+    return path.join('/');
+}
+
+function getUpdate(message : Message) : MessageUpdate {
+    return {votes: message.votes};
 }
 
 @Injectable()
 export class MessageService {
-    private _messages = MESSAGES;
+    private _root : Ref;
     
-    get children() { return this._messages; }
-    
-    getTopics() {
-        return new Observable<Message[]>((subscriber: Subscriber<Message[]>) => {
-            subscriber.next(this._messages);
-            subscriber.complete();
-        });
+    constructor(private _messageRepository : MessageRepository) {
+         this._root = this._messageRepository.get();
     }
     
-    update(message: Message): Observable<Message> {
-        return new Observable<Message>((subscriber: Subscriber<Message>) => {
-            let parent = findParent(this, message);
+    fetch() {
+        return new Observable<Message[]>(subscriber =>            
+                this._root.on('value', snapshot => {
+                    subscriber.next(snapshot.value());
+                }))
+            .map(data => Message.deserialize(data));
+    }
+    
+    save(message: Message) {
+        this._root
+            .child(getPath(message))
+            .update(getUpdate(message));
+    }
+    
+    add(message: Message) {
+        let ref = this._root
+            .child(getPath(message))
+            .push(message);
             
-            parent.children.sort(message => message.votes);
-            
-            subscriber.next(message);
-            subscriber.complete();
-        });
+        message.key = ref.key();
     }
 }
