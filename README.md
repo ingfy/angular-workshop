@@ -9,7 +9,7 @@ og [node-gyp](https://github.com/nodejs/node-gyp).
 For å komme i gang, gjør følgende:
 
 1. Klone git-repositoriet i ønsket mappe: 
-   `git clone github.com/Ciber-Norge/angular-workshop mappenavn`.
+   `git clone github.com/ingfy/angular-workshop mappenavn`.
 2. Gå inn i mappen: `cd mappenavn`.
 3. Installér avhengigheter: `npm install`.
 4. Kjør testene: `npm test`.
