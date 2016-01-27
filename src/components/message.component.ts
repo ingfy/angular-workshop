@@ -4,34 +4,50 @@ import {Input} from 'angular2/core';
 
 import {Message} from '../models/message';
 import {TimeStampComponent} from './time-stamp.component';
+import {WriteMessageComponent} from './write-message.component';
 import {MessageService} from '../services/message-service';
 
 @Component({
     selector: 'thread-message',
+    styles: [`
+        .message {
+            border: 1px solid black;
+            padding: 1em;
+        }
+    `],
     template: `
         <article>
             <main>
-                <p>{{message.text}}</p>
-                <aside class="voting">
-                    <span class="vote-count">{{message.votes}} points</span>
-                    <button class="upvote" (click)="onUpvote()">&#x1f44d;</button>
-                    <button class="downvote" (click)="onDownvote()">&#x1f44e;</button>
-                </aside>
+                <section class="message">
+                    <main>
+                        <p>{{message.text}}</p>
+                        <aside class="voting">
+                            <span class="vote-count">{{message.votes}} poeng</span>
+                            <button class="upvote" (click)="onUpvote()">👍</button>
+                            <button class="downvote" (click)="onDownvote()">👎</button>
+                        </aside>
+                    </main>
+                    <footer>
+                        <p>
+                            {{signature}}
+                            <time-stamp [date]="message.date"></time-stamp>
+                        </p>
+                    </footer>
+                </section>
             </main>
             <footer>
-                <p>
-                    {{signature}}
-                    <time-stamp [date]="message.date"></time-stamp>
-                </p>
+                <section class="reply">
+                    <write-message (onMessage)="addReply($event)"></write-message>
+                </section>
+                <section class="replies">
+                    <ul *ngFor="#reply of message.replies">
+                        <li><thread-message [message]="reply"></thread-message></li>
+                    </ul>
+                </section>
             </footer>
-            <section class="responses">
-                <ul *ngFor="#response of message.children">
-                    <li><thread-message [message]="response"></thread-message></li>
-                </ul>
-            </section>
         </article>
     `,
-    directives: [MessageComponent, TimeStampComponent, CORE_DIRECTIVES],
+    directives: [MessageComponent, TimeStampComponent, WriteMessageComponent, CORE_DIRECTIVES],
     providers: []
 })
 
@@ -56,5 +72,11 @@ export class MessageComponent {
     onDownvote() {
         this.message.downvote();
         this._messageService.save(this.message);
+    }
+    
+    addReply($event) {
+        let reply = new Message(null, this.message, $event.text, null, $event.date);
+        
+        this._messageService.add(reply);
     }
 }

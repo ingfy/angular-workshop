@@ -10,6 +10,7 @@ export interface ISerializedMessage {
 
 export class Message {
     private _votes : number = 0;
+    private _replies : Message[] = [];
     
     constructor(
         public key : string = null,
@@ -17,7 +18,6 @@ export class Message {
         public text : string = '',
         public author : string = null,
         public date : Date = new Date(),
-        private _replies : Message[] = [],
         votes : number = 0
     ) {
         if (this.parent != null) this.parent.addReply(this);
@@ -67,10 +67,11 @@ export class Message {
                 source.text, 
                 source.author,
                 new Date(source.date),
-                null,
                 source.votes);
                 
-            message.addReply.apply(message, Message.deserialize(source.replies, message));
+            if (source.replies) {
+                Message.deserialize(source.replies, message);
+            }
             
             return message;
         });

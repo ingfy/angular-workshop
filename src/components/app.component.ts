@@ -9,7 +9,7 @@ import { LoginService } from '../services/login-service';
     selector: 'angular-workshop',
     template: `
     <div class="container">
-        <h1>Velkommen til Angular-Workshop!2</h1>
+        <h1>Velkommen til Angular-Workshop!</h1>
         <auth-prompt *ngIf="!isLoggedIn"></auth-prompt>
         <forum-content *ngIf="isLoggedIn"></forum-content>
     </div>

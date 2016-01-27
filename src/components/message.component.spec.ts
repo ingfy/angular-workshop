@@ -47,13 +47,19 @@ export function main() {
         it('should display the message text', injectAsync([TestComponentBuilder], tcb => {
             return tcb
                 .createAsync(TestMessageComponent)
-                .then(fixture => {
-                    fixture.detectChanges();
-                    
-                    let compiled = fixture.debugElement.nativeElement;
-                    
+                .then(getCompiled)
+                .then(compiled => {
                     expect(compiled.querySelector('article main p').innerText).toBe(PARENT_MESSAGE_TEXT);
                 });
+        }));
+        
+        it('should have a reply component for each reply in the message', injectAsync([TestComponentBuilder], tcb => {
+            return tcb
+                .createAsync(TestMessageComponent)
+                .then(getCompiled)
+                .then(compiled => {
+                    expect(compiled.querySelectorAll('.replies thread-message').length).toBe(1); 
+                })
         }));
         
         describe('message voting', () => {            

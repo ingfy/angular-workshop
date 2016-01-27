@@ -1,13 +1,9 @@
 import {Message} from '../models/message';
 
 let coldWinter = new Message("one", null, `Hei hei hei. 
-Hvorfor har Asia så kaldt vær og vi får mildvær?`, null, new Date(2016, 0, 23));
+Hvorfor har Asia så kaldt vær og vi får mildvær?`, null, new Date(2016, 0, 23), 3);
 
-coldWinter.upvote();
-coldWinter.upvote();
-coldWinter.upvote();
-
-let yeahThoseBastards = new Message("one.one", coldWinter, `Ja, de skurkene stjal vinteren vår!`, null, new Date(2016, 0, 24));
+let yeahThoseBastards = new Message("one.one", coldWinter, `Ja, de skurkene stjal vinteren vår!`, null, new Date(2016, 0, 24), -1);
 
 yeahThoseBastards.downvote();
 
@@ -23,8 +19,4 @@ let yesWeWant = new Message("two.one", pizzaTopic, `Ja! Jeg vil ha tacopizza!`, 
 
 let lonely = new Message("three", null, `Jeg er så ensom her nede alene....`, 'Enslig, 44');
 
-export var MESSAGES: Message[] = [
-    coldWinter,
-    pizzaTopic,
-    lonely
-];
+export var MESSAGES: Message[] = [];

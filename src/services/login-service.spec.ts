@@ -14,6 +14,7 @@ export function main() {
         let loginService : LoginService;
         
         beforeEach(() => {
+            localStorage.removeItem("user");
             loginService = new LoginService(new UserRepository());
         });
         

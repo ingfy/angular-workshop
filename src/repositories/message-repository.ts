@@ -8,15 +8,23 @@ import {Message, ISerializedMessage} from '../models/message';
 
 import {MESSAGES} from './mock-messages';
 
-function resolve(path : string[], object) {        
-    if (path.length == 0) return object;
-    
-    let node = object[path.pop()];
-    
-    return resolve(path, node);
+function splitPath(path: string) {
+    return path !== "" ? path.split('/') : [];
 }
 
-function join(...paths : string[]) { return paths.join('/'); }
+function _isSubPath(parent: string[], full: string[]) {
+    if (parent.length === 0) return true; // The root is parent of all paths    
+    
+    if (parent.shift() !== full.shift()) return false;
+    
+    return _isSubPath(parent, full);
+}
+
+function isSubPath(parent: string, full: string) {
+    return _isSubPath(splitPath(parent), splitPath(full));
+}
+
+function join(...paths: string[]) { return paths.join('/'); }
 
 export class Snapshot {
     constructor(private _object : any) {}
@@ -28,8 +36,8 @@ export class Snapshot {
 
 export class Ref {
     constructor(
-        public path : string,
-        private _messageRepository : MessageRepository
+        public path: string,
+        private _messageRepository: MessageRepository
     ) {}
     
     key() {
@@ -44,13 +52,13 @@ export class Ref {
         return this._messageRepository.push(this, data);
     }
     
-    private _updateStreams : {[event : string]: Subscription<Snapshot>[]} = {};
+    private _updateStreams: {[event: string]: Subscription<Snapshot>[]} = {};
     
-    once(event : string, callback: Function) {
+    once(event: string, callback: (snapshot: Snapshot) => void) {
         this._messageRepository.fetch(this, event).subscribe(callback);
     }
     
-    on(event : string, callback : Function) {
+    on(event: string, callback: (snapshot: Snapshot) => void) {
         let updateStream = this._messageRepository.subscribe(this, event);
         
         let subscription = updateStream.subscribe(callback);
@@ -59,7 +67,7 @@ export class Ref {
         this._updateStreams[event].push(subscription);
     }
     
-    off(event : string = null) {
+    off(event: string = null) {
         this._messageRepository.unsubscribe(this, event);
         
         let events = event ? [event] : Object.keys(this._updateStreams);
@@ -70,8 +78,10 @@ export class Ref {
             .forEach(subscription => subscription.unsubscribe);
     }
     
-    child(path : string) {
-        return this._messageRepository.get(join(this.path, path));
+    child(path: string) {
+        let fullPath = this.path ? join(this.path, path) : path;
+        
+        return this._messageRepository.get(fullPath);
     }
 }
 
@@ -83,37 +93,63 @@ interface ISubscription {
 
 const BASE_PATH = '';
 
-@Injectable()
-export class MessageRepository {
-    private SEQUENCE = Math.floor(Math.random() * 1000);
+function getData() {
+    if (!localStorage.getItem("messages")) 
+        saveData(Message.serialize(MESSAGES));
     
-    private _data = Message.serialize(MESSAGES);  
+    return JSON.parse(localStorage.getItem("messages"));
+}
+
+function saveData(data) {
+    localStorage.setItem("messages", JSON.stringify(data));
+}
+
+
+function resolve(path: string[], object) {        
+    if (path.length == 0) return object;
     
-    private _resolve(path : string) : (ISerializedMessage | {[key : string]: ISerializedMessage}) {
-        return resolve(path.split('/'), this._data);
+    let key = path.shift();
+    
+    if (object[key] === undefined) {
+        object[key] = {};
     }
     
-    private _getSnapshot(path : string) {
+    return resolve(path, object[key]);
+}
+
+@Injectable()
+export class MessageRepository {
+    private _data = getData();      
+    
+    private _resolve(path: string) : (ISerializedMessage | {[key: string]: ISerializedMessage}) {
+        return resolve(splitPath(path), this._data);
+    }
+    
+    private _getSnapshot(path: string) {
         return new Snapshot(this._resolve(path));
     }
     
     private _nextId() {
-        return (this.SEQUENCE++).toString(16);
+        return Date.now().toString(16);
     }
     
-    private _notify(path : string, event : string) {
+    private _saveData() {
+        saveData(this._data);
+    }
+    
+    private _notify(path: string, event: string) {
         this._subscriptions
-            .filter(sub => sub.ref.path === path && sub.event === event)
+            .filter(sub => sub.event === event && isSubPath(sub.ref.path, path))
             .forEach(sub => sub.notify());
     }
     
-    ref(path : string) {
+    ref(path: string) {
         return new Ref(path, this);
     }
     
-    private _subscriptions : ISubscription[] = [];
+    private _subscriptions: ISubscription[] = [];
     
-    private _setupObservable(ref : Ref, event : string, addSubscription : boolean) : Observable<Snapshot> {
+    private _setupObservable(ref: Ref, event: string, addSubscription: boolean): Observable<Snapshot> {
         return new Observable(subscriber => {
             subscriber.next(this._getSnapshot(ref.path));
             
@@ -127,34 +163,36 @@ export class MessageRepository {
         });
     }
     
-    fetch(ref : Ref, event : string) {
+    fetch(ref: Ref, event: string) {
         return this._setupObservable(ref, event, false);
     }
     
-    subscribe(ref : Ref, event : string) {
+    subscribe(ref: Ref, event: string) {
         return this._setupObservable(ref, event, true);
     }
     
-    unsubscribe(ref : Ref, event : string) {
+    unsubscribe(ref: Ref, event: string) {
         this._subscriptions = 
             this._subscriptions.filter(s => s.ref != ref && (!event || s.event == event));
     }
         
-    get(path : string = BASE_PATH) {    
+    get(path: string = BASE_PATH) {    
         return this.ref(path);
     }
     
-    update(ref : Ref, data) {
+    update(ref: Ref, data) {
         let target = this._resolve(ref.path);
             
         Object.assign(target, data);
         
         this._notify(ref.path, 'value');
+        
+        this._saveData();
             
         return ref;
     }
     
-    push(ref : Ref, data) {
+    push(ref: Ref, data) {
         let id = this._nextId();
         
         let nextPath = join(ref.path, id);
@@ -165,6 +203,8 @@ export class MessageRepository {
         
         this._notify(nextPath, 'value');
         this._notify(ref.path, 'child_added');
+        
+        this._saveData();
         
         return this.ref(nextPath);
     }

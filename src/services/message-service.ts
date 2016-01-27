@@ -1,6 +1,7 @@
 import {Injectable} from 'angular2/core';
 import {Observable} from 'rxjs/Observable';
 import {Subscriber} from 'rxjs/Subscriber';
+import 'rxjs/add/operator/map';
 
 import {Message} from '../models/message';
 
@@ -13,10 +14,10 @@ interface MessageUpdate { // Directly updatable properties
 function getPath(message : Message) {
     var path = [];
     
-    while (message.parent != null) {
+    while (message != null) {
         path.unshift(message.key);
         
-        if (message.parent.parent != null) path.unshift("replies");
+        if (message.parent != null) path.unshift("replies");
         
         message = message.parent;
     }
@@ -28,6 +29,15 @@ function getUpdate(message : Message) : MessageUpdate {
     return {votes: message.votes};
 }
 
+function getPush(message : Message) {
+    return {
+        text: message.text,
+        date: message.date,
+        author: message.author,
+        votes: message.votes
+    };
+}
+
 @Injectable()
 export class MessageService {
     private _root : Ref;
@@ -37,9 +47,9 @@ export class MessageService {
     }
     
     fetch() {
-        return new Observable<Message[]>(subscriber =>            
+        return new Observable<Message[]>(subscriber =>       
                 this._root.on('value', snapshot => {
-                    subscriber.next(snapshot.value());
+                    subscriber.next(snapshot.val());
                 }))
             .map(data => Message.deserialize(data));
     }
@@ -51,10 +61,12 @@ export class MessageService {
     }
     
     add(message: Message) {
-        let ref = this._root
-            .child(getPath(message))
-            .push(message);
+        var ref = this._root;
+        
+        if (message.parent) ref = ref.child(getPath(message.parent)).child('replies');
+        
+        let newRef = ref.push(getPush(message));
             
-        message.key = ref.key();
+        message.key = newRef.key();
     }
 }
