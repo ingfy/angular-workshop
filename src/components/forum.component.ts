@@ -11,15 +11,19 @@ import {WriteMessageComponent} from './write-message.component';
 @Component({
     selector: 'forum-content',
     template: `
-    <ul class="topic-list" *ngFor="#topic of messages">
-        <li>
-            <thread-message [message]="topic"></thread-message>
-        </li>
-    </ul>
-    <footer>
-        <h2>Skriv et nytt innlegg</h2>
-        <write-message (onMessage)="onMessage($event)"></write-message>
-    </footer>
+    <article class="forum">
+        <main>
+            <ul class="thread-list">
+                <li *ngFor="#topic of messages">
+                    <thread-message [message]="topic"></thread-message>
+                </li>
+            </ul>
+        </main>
+        <footer>
+            <h2>Skriv et nytt innlegg</h2>
+            <write-message (onMessage)="onMessage($event)"></write-message>
+        </footer>
+    </article>
     `,
     directives: [MessageComponent, WriteMessageComponent, CORE_DIRECTIVES],
     providers: []

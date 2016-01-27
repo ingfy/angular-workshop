@@ -3,7 +3,7 @@ import {Observable} from 'rxjs/Observable';
 import {Subscriber} from 'rxjs/Subscriber';
 
 import {Message} from '../models/message';
-import {MESSAGES} from '../repositories/mock-messages';
+import {MESSAGES as msg_data} from '../repositories/mock-messages';
 
 function sortMessages(messages: Message[]) {
     messages.sort((a, b) => b.votes - a.votes);
@@ -12,6 +12,8 @@ function sortMessages(messages: Message[]) {
 function sortSiblings(message : Message) {
     sortMessages(message.parent.replies);
 }
+
+export var MESSAGES = msg_data;
 
 @Injectable()
 export class MockMessageService {

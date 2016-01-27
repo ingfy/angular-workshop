@@ -40,8 +40,10 @@ import {MessageService} from '../services/message-service';
                     <write-message (onMessage)="addReply($event)"></write-message>
                 </section>
                 <section class="replies">
-                    <ul *ngFor="#reply of message.replies">
-                        <li><thread-message [message]="reply"></thread-message></li>
+                    <ul>
+                        <li *ngFor="#reply of message.replies">
+                            <thread-message [message]="reply"></thread-message>
+                        </li>
                     </ul>
                 </section>
             </footer>

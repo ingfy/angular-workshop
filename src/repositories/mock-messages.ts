@@ -19,4 +19,4 @@ let yesWeWant = new Message("two.one", pizzaTopic, `Ja! Jeg vil ha tacopizza!`, 
 
 let lonely = new Message("three", null, `Jeg er så ensom her nede alene....`, 'Enslig, 44');
 
-export var MESSAGES: Message[] = [];
+export var MESSAGES: Message[] = [coldWinter, pizzaTopic, lonely];

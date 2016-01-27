@@ -1,6 +1,8 @@
 import {Component, Output, EventEmitter} from 'angular2/core';
 import {FORM_DIRECTIVES, CORE_DIRECTIVES} from 'angular2/common';
 
+// TODO: remove all contents of this component and the class
+
 @Component({
     selector: 'write-message',
     template: `
