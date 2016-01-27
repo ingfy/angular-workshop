@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "gulp test",
+    "start": "gulp watch",
     "postinstall": "./node_modules/.bin/tsd install"
   },
   "repository": {
