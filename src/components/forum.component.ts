@@ -11,7 +11,6 @@ import {WriteMessageComponent} from './write-message.component';
 @Component({
     selector: 'forum-content',
     template: `
-    <p class="greeting">Heisann {{username}}!</p>
     <ul class="topic-list" *ngFor="#topic of messages">
         <li>
             <thread-message [message]="topic"></thread-message>
@@ -46,7 +45,7 @@ export class ForumComponent {
     }
     
     onMessage($event) {
-        let topic = new Message(null, null, $event.text, null, $event.date);
+        let topic = new Message(null, null, $event.text, this.username, $event.date);
         
         this._messageService.add(topic);
     }

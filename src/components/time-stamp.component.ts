@@ -16,7 +16,7 @@ export class TimeStampComponent {
     get formattedDate() {
         let msSinceMessage = this._now.getTime() - this.date.getTime(); 
         
-        if (msSinceMessage < 1000) return 'Seconds ago';
+        if (msSinceMessage < 10 * 1000) return 'Seconds ago';
         if (msSinceMessage < 60 * 1000) return 'Less than a minute ago';
         if (msSinceMessage < 60 * 60 * 1000) return 'Less than an hour ago';
         

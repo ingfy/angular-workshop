@@ -29,11 +29,7 @@ export function main() {
                     
                     let compiled = fixture.debugElement.nativeElement;
                     
-                    let greeting = compiled.querySelector('.greeting');
                     
-                    expect(greeting).not.toBe(null);
-                    expect(greeting.innerText).toMatch(/heisann/i);
-                    expect(greeting.innerText).toContain(USERNAME);
                 });
         }));
     });

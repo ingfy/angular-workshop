@@ -9,7 +9,11 @@ export class LoggedInService {
         return Promise.resolve(this.currentUser);
     }
     
-    get isLoggedIn() { return true };
+    get isLoggedIn() { return this.currentUser != null; };
+    
+    logout() {
+        this.currentUser = null;
+    }
 }
 
 export class LoggedOutService {

@@ -4,7 +4,7 @@
 /* global System */     // Imported SystemJS: node_modules/systemjs/dist/system.src.js
 
 // Turn on full stack traces in errors to help debugging
-Error.stackTraceLimit=Infinity;
+Error.stackTraceLimit=0; //Infinity
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
 
