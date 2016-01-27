@@ -9,19 +9,8 @@ import { LoginService } from '../services/login-service';
     selector: 'angular-workshop',
     template: `
     <div class="container">
-        <!--
-            <h1>VÆL-KOM'n til Angular-Workshop!</h1>
-            <p>Her mangler det noe!</p>
-        -->
-        <!-- TODO: remove following -->
-        <h1>Velkommen til Angular-Workshop!</h1>
-        <auth-prompt *ngIf="!isLoggedIn"></auth-prompt>
-        <div *ngIf="isLoggedIn">
-            <p class="greeting">Heisann {{username}}!</p>
-            <button class="logout" (click)="onLogout()">Logg ut</button>
-            <forum-content></forum-content>
-        </div>
-        <!-- ENDTODO -->
+        <h1>VÆL-KOM'n til Angular-Workshop!</h1>
+        <p>Her mangler det noe!</p>
     </div>
     `,
     directives: [AuthPromptComponent, ForumComponent, CORE_DIRECTIVES]

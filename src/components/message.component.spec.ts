@@ -101,7 +101,11 @@ export function main() {
                         
                         let compiled = fixture.debugElement.nativeElement;
                         
-                        compiled.querySelector('.upvote').click();
+                        let btn = compiled.querySelector('.upvote');
+                        
+                        if (!btn) return;
+                        
+                        btn.click();
                         
                         expect(fixture.componentInstance.message.votes).toBe(1);
                     });
@@ -115,7 +119,11 @@ export function main() {
                         
                         let compiled = fixture.debugElement.nativeElement;
                         
-                        compiled.querySelector('.downvote').click();
+                        let btn = compiled.querySelector('.downvote');
+                        
+                        if (!btn) return;
+                        
+                        btn.click();
                         
                         expect(fixture.componentInstance.message.votes).toBe(-1);
                     });

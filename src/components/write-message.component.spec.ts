@@ -16,7 +16,9 @@ import {expectToBeSameDay} from '../utils/testing-utils';
 
 export function main() {
     describe('WriteMessageComponent', () => {
-        it('should toggle the reply form when clicking the button', injectAsync([TestComponentBuilder], tcb => {
+        it(`should not display the reply form by default, but
+toggle the reply form when clicking a button (with the class "toggle-write-button")
+so that we don't get annoyed by so many input boxes all the time`, injectAsync([TestComponentBuilder], tcb => {
             return tcb
                 .createAsync(TestWriteMessageComponent)
                 .then(fixture => {

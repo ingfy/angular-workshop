@@ -13,21 +13,9 @@ interface LoginInfo {
         <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
             <div class="form-group">
                 <label for="username">Brukernavn:</label>
-                <input class="form-control" 
-                       required
-                       [(ngModel)]="model.username" 
-                       ngControl="username"
-                       placeholder="Hva heter du?"
-                       #username="ngForm" />
-                <div [hidden]="username.valid || !username.touched" 
-                     class="alert alert-danger">
-                    Vennligst fyll inn brukernavnet ditt!
-                </div>
+                <p>Mitt statiske brukernavn</p>
             </div>
-            <div class="form-group">
-                <button type="submit"
-                        [disabled]="!loginForm.form.valid">Logg inn!</button>
-            </div>
+            <p>Hvor skal jeg trykke???</p>
         </form>
     `,
     directives: [FORM_DIRECTIVES]

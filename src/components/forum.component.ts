@@ -13,15 +13,10 @@ import {WriteMessageComponent} from './write-message.component';
     template: `
     <article class="forum">
         <main>
-            <ul class="thread-list">
-                <li *ngFor="#topic of messages">
-                    <thread-message [message]="topic"></thread-message>
-                </li>
-            </ul>
+            <ul></ul>
         </main>
         <footer>
             <h2>Skriv et nytt innlegg</h2>
-            <write-message (onMessage)="onMessage($event)"></write-message>
         </footer>
     </article>
     `,

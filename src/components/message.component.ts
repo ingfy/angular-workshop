@@ -19,14 +19,6 @@ import {MessageService} from '../services/message-service';
         <article>
             <main>
                 <section class="message">
-                    <main>
-                        <p>{{message.text}}</p>
-                        <aside class="voting">
-                            <span class="vote-count">{{message.votes}} poeng</span>
-                            <button class="upvote" (click)="onUpvote()">👍</button>
-                            <button class="downvote" (click)="onDownvote()">👎</button>
-                        </aside>
-                    </main>
                     <footer>
                         <p>
                             {{signature}}
@@ -39,13 +31,7 @@ import {MessageService} from '../services/message-service';
                 <section class="reply">
                     <write-message (onMessage)="addReply($event)"></write-message>
                 </section>
-                <section class="replies">
-                    <ul>
-                        <li *ngFor="#reply of message.replies">
-                            <thread-message [message]="reply"></thread-message>
-                        </li>
-                    </ul>
-                </section>
+                <section class="replies"></section>
             </footer>
         </article>
     `,
